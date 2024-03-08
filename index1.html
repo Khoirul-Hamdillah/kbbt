@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamus Besar Bahasa Triana</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        
+        .img{
+          width: 100%;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .search-container {
+          position: relative;
+          display: inline-block;
+        }
+        
+        input[type="text"] {
+          width: 80%;
+          padding: 30px;
+          border-radius: 50px;
+          border: none;
+          background-color: #ffffff10;
+          outline: none;
+          color: #ffffff50;
+        }
+        
+        #result {
+          margin-top: 20px;
+          color: #ffffff50;
+          background-color: #ffffff10;
+          padding: 15px;
+          justify-content: center;
+          margin: 45px;
+          border-radius: 10px;
+          text-align: justify;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+      <img class="img" src="kbbt-logo.png">
+        <div class="search-container">
+  <input type="text" id="searchInput" placeholder="Cari arti kata...">
+</div>
+        <div id="result"></div>
+    </div>
+  <script>
+        // Fungsi untuk mencari kata
+        function searchWord() {
+            var input = document.getElementById("searchInput").value.toLowerCase();
+            var result = "'" + input + "'; artinya ";
+            
+            // Ambil data dari file CSV
+            fetch('data.csv')
+                .then(response => response.text())
+                .then(data => {
+                    // Memproses data CSV
+                    var lines = data.split('\n');
+                    for (var i = 0; i < lines.length; i++) {
+                        var parts = lines[i].split(',');
+                        if (parts[0].toLowerCase() === input) {
+                            result += parts[1];
+                            break;
+                        }
+                    }
+                    if (!result.includes("artinya")) {
+                        result += "belum tersedia.";
+                    }
+                    document.getElementById("result").innerText = result;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Mendengarkan peristiwa keypress pada input field
+        document.getElementById("searchInput").addEventListener("keypress", function(event) {
+            // 13 adalah kode tombol "Enter"
+            if (event.keyCode === 13) {
+                searchWord(); // Panggil fungsi pencarian jika tombol "Enter" ditekan
+            }
+        });
+    </script>
+</body>
+</html>
